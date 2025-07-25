@@ -94,6 +94,11 @@ void vector_insert(Vector*v, int index, int item) {
     *(v -> data + index) = item;
     v -> size++;
 }
+
+//Inserts an item at the front of the vector — index 0
+void vector_prepend(Vector* v, int item) {
+    vector_insert(v, 0, item);
+}
 int main(void) {
     //checking for vector initialization and resizing
     Vector v = vector_init(20); // Try initializing with a number > 16
@@ -137,12 +142,23 @@ int main(void) {
         printf("v[%d] = %d\n", i, vector_at(&v4, i));
     }
 
+    Vector v5 = vector_init(4);
+
+    vector_push(&v5, 10);
+    vector_push(&v5, 20);
+
+    vector_prepend(&v5, 5);
+
+    for (int i = 0; i < vector_size(&v5); i++) {
+        printf("v[%d] = %d\n", i, vector_at(&v5, i));
+    }
 
     free(v.data); // Don't forget to free the allocated memory later
     free(v1.data);
     free(v2.data);
     free(v3.data);
     free(v4.data);
+    free(v5.data);
 
     return 0;
 }
