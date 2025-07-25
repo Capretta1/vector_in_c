@@ -77,7 +77,23 @@ void vector_push(Vector* v, int value) {
     v->size++;
 }
 
+// Function to insert a value at a specific index in the vector
+void vector_insert(Vector*v, int index, int item) {
+    if (index < 0 || index > v -> size) {
+        fprintf(stderr, "Index %d out of bounds (size: %d)\n", index, v->size);
+        exit(EXIT_FAILURE);
+    }
 
+    if (v -> size == v -> capacity) {
+        vector_resize(v, v -> capacity * 2);
+    }
+
+    for (int i = v -> size; i > index; i--) {
+        *(v -> data + i) = *(v -> data + i);
+    }
+    *(v -> data + index) = item;
+    v -> size++;
+}
 int main(void) {
     //checking for vector initialization and resizing
     Vector v = vector_init(20); // Try initializing with a number > 16
@@ -109,12 +125,24 @@ int main(void) {
         printf("v[%d] = %d\n", i, vector_at(&v3, i));
     }
 
+// checking for vector insert function
+    Vector v4 = vector_init(4);
+    vector_push(&v4, 10);
+    vector_push(&v4, 20);
+    vector_push(&v4, 30);
+
+    vector_insert(&v4, 1, 15);  // Insert 15 at index 1
+
+    for (int i = 0; i < vector_size(&v4); i++) {
+        printf("v[%d] = %d\n", i, vector_at(&v4, i));
+    }
 
 
     free(v.data); // Don't forget to free the allocated memory later
     free(v1.data);
     free(v2.data);
     free(v3.data);
+    free(v4.data);
 
     return 0;
 }
