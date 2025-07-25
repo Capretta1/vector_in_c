@@ -1,21 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+// defining struct Vector
 typedef struct{
     int* data;
     int size;
     int capacity;
 } Vector;
 
-
+//creating a constructor for vector
 Vector vector_init(int starting_size) {
     int capacity = 16;
     while (capacity < starting_size) {
         capacity *=2;
     }
 
-    int* data = malloc(capacity * sizeof(int));
+    int* data = malloc(capacity * sizeof(int)); // Allocate memory for the data array
     if (data ==NULL) {
         fprintf(stderr, "out of memory\n");
         exit(EXIT_FAILURE);
@@ -26,25 +26,28 @@ Vector vector_init(int starting_size) {
     v.capacity = capacity;
     return v;
 }
+// defining functions for vector operations
 int vector_size(Vector* v) {
     return v->size;
 }
-
+// Function to get the capacity of the vector
 int vector_capacity(Vector* v) {
     return v->capacity;
 }
-
+// Function to check if the vector is empty
 int vector_empty(Vector* v) {
     return v->size == 0;
 }
 
+// Function to get the value at a specific index in the vector
 int vector_at(Vector* v, int index) {
     if (index < 0 || index >= v->size) {
         fprintf(stderr, "Index %d out of bounds (size: %d)\n", index, v->size);
         exit(EXIT_FAILURE);
     }
-    return *(v ->data + index);
+    return *(v ->data + index); // Accessing the value at the specified index
 }
+// Function to resize the vector's data array
 void vector_resize(Vector* v, int new_capacity) {
     int* new_data = malloc(new_capacity * sizeof(int));
     if (new_data == NULL) {
@@ -65,6 +68,7 @@ void vector_resize(Vector* v, int new_capacity) {
     v -> capacity = new_capacity;
     printf("Resized vector to new capacity: %d\n", new_capacity);
 }
+// Function to push a new value into the vector
 void vector_push(Vector* v, int value) {
     if (v -> size == v-> capacity) {
         vector_resize(v, v-> capacity);
