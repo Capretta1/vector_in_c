@@ -99,6 +99,29 @@ void vector_insert(Vector*v, int index, int item) {
 void vector_prepend(Vector* v, int item) {
     vector_insert(v, 0, item);
 }
+
+//pop() function, which removes and returns the last item of the vector.
+int vector_pop(Vector* v) {
+    //To avoid wasting too much memory when many elements are removed.
+    //We reduce capacity to half when the size falls below 25% of capacity (but never below your starting minimum capacity).
+    if (v->size == 0) {
+        fprintf(stderr, "Pop from empty vector\n");
+        exit(EXIT_FAILURE);
+    }
+
+    int item = *(v->data + v->size - 1);
+    v->size--;
+
+    if (v->size > 0 && v->size <= v->capacity / 4) {
+        int new_capacity = v->capacity / 2;
+        if (new_capacity < 16) {
+            new_capacity = 16;  // Keep minimum capacity
+        }
+        vector_resize(v, new_capacity);
+    }
+
+    return item;
+}
 int main(void) {
     //checking for vector initialization and resizing
     Vector v = vector_init(20); // Try initializing with a number > 16
@@ -153,12 +176,25 @@ int main(void) {
         printf("v[%d] = %d\n", i, vector_at(&v5, i));
     }
 
+    Vector v6 = vector_init(16);
+    vector_push(&v6, 10);
+    vector_push(&v6, 20);
+    vector_push(&v6, 30);
+
+    printf("Popped: %d\n", vector_pop(&v6)); // 30
+    printf("Popped: %d\n", vector_pop(&v6)); // 20
+
+    for (int i = 0; i < vector_size(&v6); i++) {
+        printf("v[%d] = %d\n", i, vector_at(&v6, i)); // Should print only 10
+    }
+
     free(v.data); // Don't forget to free the allocated memory later
     free(v1.data);
     free(v2.data);
     free(v3.data);
     free(v4.data);
     free(v5.data);
+    free(v6.data);
 
     return 0;
 }
