@@ -122,6 +122,29 @@ int vector_pop(Vector* v) {
 
     return item;
 }
+
+//delete(index), which removes an item from any position in the vector and shifts the remaining elements left to fill the gap.
+void vector_delete(Vector* v, int index) {
+    if (index < 0 || index >= v->size) {
+        fprintf(stderr, "Index %d out of bounds for delete (size: %d)\n", index, v->size);
+        exit(EXIT_FAILURE);
+    }
+
+    // Shift everything left from index+1 onward
+    for (int i = index; i < v->size - 1; i++) {
+        *(v->data + i) = *(v->data + i + 1);
+    }
+
+    v->size--;
+
+    if (v->size > 0 && v->size <= v->capacity / 4) {
+        int new_capacity = v->capacity / 2;
+        if (new_capacity < 16) {
+            new_capacity = 16;
+        }
+        vector_resize(v, new_capacity);
+    }
+}
 int main(void) {
     //checking for vector initialization and resizing
     Vector v = vector_init(20); // Try initializing with a number > 16
@@ -188,6 +211,18 @@ int main(void) {
         printf("v[%d] = %d\n", i, vector_at(&v6, i)); // Should print only 10
     }
 
+    Vector v7 = vector_init(4);
+
+    vector_push(&v7, 10);
+    vector_push(&v7, 20);
+    vector_push(&v7, 30);
+    vector_push(&v7, 40);
+
+    vector_delete(&v7, 1); // Delete index 1 (20)
+
+    for (int i = 0; i < vector_size(&v7); i++) {
+        printf("v[%d] = %d\n", i, vector_at(&v7, i));
+    }
     free(v.data); // Don't forget to free the allocated memory later
     free(v1.data);
     free(v2.data);
@@ -195,6 +230,7 @@ int main(void) {
     free(v4.data);
     free(v5.data);
     free(v6.data);
+    free(v7.data);
 
     return 0;
 }
